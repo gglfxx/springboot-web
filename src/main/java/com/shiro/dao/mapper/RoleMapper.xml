@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiro.dao.RoleDao">
+    <!--根据用户Id查询一级菜单-->
+    <select id="findRoleNameByUserId" resultType="java.util.Map">
+	SELECT
+		a.role_name
+	FROM
+		sys_role a
+	JOIN sys_user_role b ON a.id = b.role_id
+	JOIN sys_user c ON
+	b.user_id = c.id
+	WHERE
+		c.id =#{id}
+    </select>
+</mapper>

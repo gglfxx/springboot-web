@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiro.dao.UserDao">
+    <resultMap id="BaseResultMap" type="com.shiro.entity.User">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="sex" column="sex" />
+        <result property="name" column="name" />
+        <result property="idNum" column="id_num" />
+        <result property="birthday" column="birthday" />
+        <result property="email" column="email" />
+        <result property="phone" column="phone" />
+        <result property="headImageUrl" column="head_imageUrl" />
+        <result property="createId" column="create_id" />
+        <result property="createName" column="create_name" />
+        <result property="createTime" column="create_time" />
+        <result property="createIp" column="create_ip" />
+        <result property="updateId" column="update_id" />
+        <result property="updateName" column="update_name" />
+        <result property="updateTime" column="update_time" />
+        <result property="updateIp" column="update_ip" />
+        <result property="lastLoginTime" column="last_login_time" />
+        <result property="useFlag" column="use_flag" />
+        <result property="deleteFlag" column="delete_flag" />
+    </resultMap>
+    <!--根据用户名查询用户-->
+    <select id="findByUsername" resultMap="BaseResultMap">
+        select * from sys_user where username = #{username} and delete_flag = 0
+    </select>
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select * from sys_user
+        where
+        username= #{username}
+        and password = #{password}
+        and delete_flag = 0
+    </select>
+    <!-- 查询权限 -->
+    <select id="findPermissionsByUserId" resultType="java.util.Map">
+        SELECT
+		d.permission 
+		FROM
+		sys_user a
+		JOIN sys_user_role b ON a.id = b.user_id
+		JOIN sys_role_resource c ON b.role_id = c.role_id
+		JOIN sys_resource d ON c.resource_id = d.id 
+		WHERE
+		a.id =#{id}
+    </select>
+</mapper>

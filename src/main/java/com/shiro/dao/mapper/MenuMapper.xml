@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shiro.dao.MenuDao">
+    <!--根据用户Id查询一级菜单-->
+    <select id="findParMenu" resultType="com.shiro.entity.Menu">
+       select e.id,e.url as path,e.`name`,e.icon as iconCls
+      from sys_user a
+      JOIN sys_user_role b on
+      a.id = b.user_id
+      JOIN sys_role c on
+      b.role_id = c.id and c.`status` =0
+      JOIN sys_role_permission d
+      on c.id = d.role_id
+      JOIN sys_permission e on
+      d.permission_id = e.id and e.`status` = 0
+      where  e.parent_id =0
+        <if test="userId != null and userId != ''">
+           and a.user_id = #{userId}
+        </if>
+      and a.`status`=0 and a.locked = 0
+      and e.type=1
+    </select>
+
+    <!--根据菜单id获取子菜单-->
+    <select id="findSubMenu" resultType="com.shiro.entity.Menu">
+       select b.id,b.url as path, b.`name`, b.icon as iconCls from sys_permission a,sys_permission b
+        where a.id = b.parent_id and a.type =1 and a.`status` =0 and b.`status` =0
+        and a.id = #{id}
+    </select>
+</mapper>

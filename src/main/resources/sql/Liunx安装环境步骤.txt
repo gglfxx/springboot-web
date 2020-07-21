@@ -1,0 +1,187 @@
+一、JDK安装步骤
+1、首先从官网下载jdk文件 tar.gz结尾等等
+2、解压至任意文件夹中
+譬如：tar zxvf jdk-8u211-linux-x64.tar.gz -C /home/jdk/
+3、修改环境变量
+命令：vim /etc/profile
+用vim编辑器来编辑profile文件，在文件末尾添加一下内容（按“i”进入编辑）：
+export JAVA_HOME=/usr/java/jdk1.8.0_211 //路径为你jdk的位置
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib:$CLASSPATH
+export JAVA_PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin
+export PATH=$PATH:${JAVA_PATH}
+保存并退出(按：wq 回车)
+然后输入命令 source /etc/profile让profile文件立即生效，
+4、测试是否成功
+java  javac java -version 
+
+二、tomact 安装步骤
+1、首先从官网下载tomcat文件 tar.gz结尾等等
+2、解压至任意文件夹中
+譬如：tar zxvf apache-tomcat-9.0.21.tar.gz -C /home/web/
+3、启动tomcat并测试
+cd /home/apache-tomcat-9.0.21/bin 
+执行 ./startup.sh 启动tomcat
+     ./shutdown.sh 停止tomcat
+输入地址加端口号 看到tomcat界面说明成功了
+
+三、nginx安装
+1、首先从官网下载nginx文件 tar.gz结尾等等
+2、解压至任意文件夹中
+譬如：tar zxvf nginx-1.17.1.tar.gz -C /home/
+3、安装 gcc 和 g++ 编译器 安装 SSL 安装 pcre
+yum -y install gcc automake autoconf libtool make
+yum install gcc gcc-c++
+yum -y install openssl openssl-devel
+yum -y install pcre-devel
+
+4、make 编译安装它
+cd nginx-1.17.1
+./configure
+make&&make install
+5、添加全局命令
+ln -s /usr/local/nginx/sbin/nginx /usr/bin/nginx
+6、测试安装
+nginx -V  
+验证服务是否启动成功netstat -ntlp | grep nginx
+添加nginx服务
+
+vim /lib/systemd/system/nginx.service
+
+[Unit]
+Description=nginx
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/nginx/sbin/nginx
+ExecReload=/usr/local/nginx/sbin/nginx -s reload
+ExecStop=/usr/local/nginx/sbin/nginx -s quit
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+以服务的方式启动nginx
+pkill nginx
+systemctl start nginx
+ 
+查看服务是否启动
+1 systemctl status nginx
+2 netstat -ntlp | grep nginx
+ 
+配置nginx服务开机自动启动  systemctl enable nginx
+这下子就安装完毕了 ，配置文件在：
+vim /usr/local/nginx/conf/nginx.conf
+重启nginx命令 systemctl restart nginx
+这个时候访问你服务器的公用 ip 地址，如果可以打开下面这样一个页面，说明 nginx 启动成功
+
+7、vue.js项目部署到liunx下
+打包 Vue 项目并上传至服务器
+在 npm run build 打包项目之前，需要修改一下 config 目录中的 index.js 文件，否则静态文件可能会加载失败。
+打开 config/index.js，定位到 build 对象下的 assetsPublicPath 位置，路径修改为“./”：
+build: {
+    // ...
+    assetsPublicPath: './',
+}
+然后对vue.js项目打包，把打包后的dist文件夹放入你的位置
+vim /usr/local/nginx/conf/nginx.conf
+在server下的location中配置站点根目录:
+server{
+	listen 80;
+	...
+	...
+	location / {
+            root   /home/www/dist; //你vue.js项目路径
+			autoindex on;
+            index  index.html index.htm;
+       }
+}
+配置完成 重启nginx systemctl restart nginx
+打开你的页面即可看到你的项目
+
+五、SVN服务器
+查看：
+a. 启动SVN
+# svnserve -d -r /opt/svn/repositories
+b. 检测SVN端口
+# netstat -ln |grep 3690
+
+六、redis启动服务
+1、在Redis源代码目录中的utils文件夹中有个redis_init_script的初始化脚本,复制到/etc/init.d目录中
+文件改名为redis-端口号,
+修改REDISPORT 为同样的端口号
+修改redis配置路径 CONF="/home/redis-5.0.5/redis.conf"
+2、设置文件redis-端口号的权限，让Linux可以执行
+chmod 755 redis-端口号
+3、启动Redis服务测试，此处启动用的是第二步设置的启动脚本
+    /etc/init.d/redis-端口号 start
+4、设置开机自启动，即：
+chkconfig redis-端口号 on
+
+七、搭建git服务器
+1、官网下载git-2.22.0.tar.gz
+tar zxvf git-2.22.0.tar.gz
+./configure
+make &make install 安装配置
+2、创建git用户
+groupadd 组名 ##创建组
+useradd 用户名 ##创建用户
+passwd 用户名 ##设置密码
+usermod -G 组名  用户名  #将用户添加到对应组
+cat /etc/group # 查看用户组及用户是否成功配置
+3、创建git仓库
+mkdir /home/git_repo/back_end 
+cd /home/git_repo/back_end  git init --bare springboot-web.git
+##修改项目的权限
+chmod -R 777 springboot-web.git
+##修改git仓库的用户组
+chown -R git:组名 /home/git_repo/back_end/springboot-web.git/
+禁用git用户的shell登录，防止用户通过Git用户登录服务器。编辑/etc/路径下的passwd文件，将文件后边的bash改成git-shell，
+譬如：dengjie:x:1001:1001::/home/dengjie:/home/git/git-shell
+
+4、客户端git 初始化一下用户并把公钥放在.ssh/authorized_keys里
+git config --global user.name "guiguoliang"
+git config --global user.email "guiguoliang@163.com"
+#获取公钥
+$ ssh-keygen -t rsa -C 'guiguoliang@163.com'
+#liunx 进入 /etc/ssh 目录，编辑 sshd_config，打开以下三个配置的注释：
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+##查看.ssh文件下的所有文件的属性
+lsattr authorized_keys
+##移除i a 属性
+chattr -i -a authorized_keys
+把生成的公钥放入 authorized_keys中
+最后 chattr +i +a authorized_keys
+5、本地项目first commit 
+--使用git客户端进行本地项目路径
+git init  #进行初始化
+git add * #把当前项目所有内容向git中添加
+git commit -m '说明' #提交添加内容到本地库
+git branch -a	#查看本地分支
+git remote -v  #查看远程分支信息
+--如果输出信息为空，表示还没有添加远程主机，进行远程主机添加
+例如：git remote add origin guiguoliang@129.28.56.34:/home/git_repo/back_end/springboot-web.git
+--最后，将本地库push到远程仓库
+git push origin master
+#从git服务器中下载代码
+git-clone guiguoliang@129.28.56.34:/home/git_repo/back_end/springboot-web.git
+
+liunx下忘记mysql root密码修改步骤
+ 1、etc/my.cnf 随意一行添加skip-grant-tables(跳过密码验证)
+ 2、service mysqld restart 重启mysql 服务
+ 3、mysql -uroot -p 直接回车进入mysql
+ 4、update user set authentication_string=passworD("cdn12345678") where user='root'; 修改密码(5.7版本以上)
+	flush privileges;
+ 5、service mysqld restart 重启mysql 服务
+ 6、重新登录即可
+
+ firewall-cmd --add-port = 8001/tcp --permanent
+ firewall-cmd --zone=public --add-port=8001/tcp --permanent
+ docker ps -a
+ docker rm xxx_id
+ docker stop xxx_id
+ docker images
+ docker rmi  xxx_id
