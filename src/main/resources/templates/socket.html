@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket测试</title>
+</head>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+var stompClient = null; 
+function setConnected(connected) {  
+    document.getElementById('connect').disabled = connected;  
+    document.getElementById('disconnect').disabled = !connected;  
+    document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';  
+    document.getElementById('response').innerHTML = '';  
+}
+function connect(){
+    var socket = new SockJS("/socket");
+    stompClient = Stomp.over(socket);
+    stompClient.debug = null;
+    stompClient.connect({}, function (frame) {
+    	setConnected(true);
+    	//订阅信息
+    	stompClient.subscribe('/topic/notice', function (data) {            
+    		showGreeting(data.body);     
+    	});
+     });  
+ }
+//断开连接
+function disconnect() {  
+    if (stompClient != null) { 
+    	setConnected(false);
+        stompClient.disconnect();  
+    }  
+}
+//订阅信息
+function showGreeting(message) {  
+    var response = document.getElementById('response');  
+    var p = document.createElement('p');  
+    p.style.wordWrap = 'break-word';  
+    p.appendChild(document.createTextNode(message));  
+    response.appendChild(p);  
+}
+</script>
+<body class="easyui-layout">
+    <div>  
+        <div>  
+            <button id="connect" onclick="connect();">Connect</button>  
+            <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>  
+        </div>  
+        <div id="conversationDiv">  
+            <p id="response" style="border: black;width: 500px;border-style: dashed;"></p>  
+        </div>  
+    </div> 
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.shiro.config;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
@@ -101,7 +103,37 @@ public class WebSocketServer {
             }
         }
     }
+    
+    /**
+     * 群发消息
+     * @param message
+     * @throws IOException
+     */
+    public static void BroadCastInfo(String message){
+    	Iterator<Entry<String, WebSocketServer>> itartors = webSocketMap.entrySet().iterator();
+    	while(itartors.hasNext()){
+    		Entry<String, WebSocketServer> entry = itartors.next();
+    		WebSocketServer webSocketServer = entry.getValue();
+    		try {
+				webSocketServer.sendMessage(message);
+			} catch (Exception e) {
+				logger.error("群发消息出错："+e.getMessage());
+			}
+    	}
+    }
 
+    /**
+     * 指定用户发送消息
+     * @param sessionId
+     * @param message
+     * @throws IOException
+     */
+    public static void SendMessage(String message,String userId) throws IOException {
+        if(webSocketMap.contains(userId)){
+        	webSocketMap.get(userId).sendMessage(message);
+        }
+    }
+    
     /**
      *
      * @param session

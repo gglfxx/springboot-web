@@ -29,6 +29,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     registration.addPathPatterns("/**")
     	 .excludePathPatterns("/","/user/login","/kickout","/api/**")
     	 .excludePathPatterns("/druid/**")
+    	 .excludePathPatterns("/page")
     	 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
   }
 }
