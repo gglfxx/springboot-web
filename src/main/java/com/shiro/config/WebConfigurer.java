@@ -30,6 +30,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     	 .excludePathPatterns("/","/user/login","/kickout","/api/**")
     	 .excludePathPatterns("/druid/**")
     	 .excludePathPatterns("/page")
+         .excludePathPatterns("/plugins/**")
     	 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
   }
 }

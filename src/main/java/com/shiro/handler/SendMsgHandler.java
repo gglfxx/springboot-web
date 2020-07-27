@@ -29,7 +29,7 @@ public class SendMsgHandler {
 		return "/socket";
 	}
 	
-	@Scheduled(fixedRate = 10000)
+	//@Scheduled(fixedRate = 10000)
     @MessageMapping("/change-notice")  // 接收客户端推送信息的地址，配置了头，所以前端发送应该是"/app/change-notice"
     public void greeting(){
     	User user= userService.findByUsername("admin");
