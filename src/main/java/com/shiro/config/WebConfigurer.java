@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
 
-/*@Configuration
+@Configuration
 public class WebConfigurer implements WebMvcConfigurer {
  
   @Resource
@@ -30,8 +30,9 @@ public class WebConfigurer implements WebMvcConfigurer {
     	 .excludePathPatterns("/","/user/login","/kickout","/api/**")
     	 .excludePathPatterns("/druid/**")
     	 .excludePathPatterns("/page")
-         .excludePathPatterns("/static/**")
+         .excludePathPatterns("/js/**")
+         .excludePathPatterns("/css/**")
+         .excludePathPatterns("/font/**")
     	 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
   }
 }
-*/
