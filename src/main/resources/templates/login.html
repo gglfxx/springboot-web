@@ -18,18 +18,17 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
-
-      <form action="index.html" method="post">
+      <form class="loginForm">
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+          <input type="text" class="form-control" name="username" placeholder="Username">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+              <span class="fas fa-user"></span>
             </div>
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" name="password" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -41,27 +40,16 @@
             <div class="icheck-primary">
               <input type="checkbox" id="remember">
               <label for="remember">
-                Remember Me
+                	记住我
               </label>
             </div>
           </div>
-          <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <a class="btn btn-primary btn-block" href="javascript:;"  onclick="login();">登陆</a>
           </div>
           <!-- /.col -->
         </div>
       </form>
-
-      <div class="social-auth-links text-center mb-3">
-        <p>- OR -</p>
-        <a href="#" class="btn btn-block btn-primary">
-          <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-        </a>
-        <a href="#" class="btn btn-block btn-danger">
-          <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-        </a>
-      </div>
       <p class="mb-1">
         <a href="pages/examples/forgot-password.html">忘记密码?</a>
       </p>
@@ -69,11 +57,11 @@
         <a href="pages/examples/register.html" class="text-center">注册</a>
       </p>
     </div>
-    <!-- /.login-card-body -->
   </div>
 </div>
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/lib/jquery/jquery.min.js"></script>
+<script src="js/lib/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="js/adminlte.min.js"></script>
+<script src="js/system/login.js"></script>
 </body>
 </html>

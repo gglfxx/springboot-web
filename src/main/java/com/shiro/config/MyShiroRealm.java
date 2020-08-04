@@ -1,7 +1,6 @@
 package com.shiro.config;
 
 import com.shiro.entity.User;
-import com.shiro.filter.KickoutSessionControlFilter;
 import com.shiro.service.RoleService;
 import com.shiro.service.UserService;
 import org.apache.shiro.authc.*;
@@ -19,7 +18,7 @@ import javax.annotation.Resource;
 //实现AuthorizingRealm接口用户用户认证
 public class MyShiroRealm extends AuthorizingRealm {
 
-	private static final Logger logger = LoggerFactory.getLogger(KickoutSessionControlFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
 	
     @Resource
     private UserService userService;
